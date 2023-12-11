@@ -31,8 +31,9 @@ class Translator {
                 newPhrase = newPhrase.replace(regex, insertWord);
             }
 
-            
-    
+            const americanTimeRegex = /(\b\d{1,2}):(\d{1,2}\b)/g
+            newPhrase = newPhrase.replace(americanTimeRegex, '<span class="highlight">$1.$2</span>')
+
             newPhrase = newPhrase.charAt(0).toUpperCase() + newPhrase.slice(1);
         
         }
