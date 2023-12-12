@@ -18,11 +18,44 @@ class Translator {
         return translated
     }
 
+
     americanToBritish(txt) {
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function capitalize(title) {
+            return title.charAt(0).toUpperCase() + title.slice(1)
+        }
+
+        function capitalizeTitleAndName(phrase) {
+            let words = phrase.split(' ')
+
+            for(let i = 0; i < words.length; i++) {
+                if(/mr|mrs|ms|mx|dr|prof/gi.test(words[i])) {
+                    words[i + 1] = words[i + 1].charAt(0).toUpperCase() + words[i + 1].slice(1);
+                } 
+            }
+
+            words = words.join(' ')
+
+           return words
+        }
+
         let newPhrase = '';
 
         if(txt) {
             newPhrase = txt.toLowerCase();
+
+            for(let title in americanToBritishTitles) {
+                const escapedTitle = escapeRegExp(title)
+                const regexTitle = new RegExp(escapedTitle, "gi")
+
+                let insertTitle = `<span class="highlight">${capitalize(americanToBritishTitles[title])}</span>`
+
+                newPhrase = newPhrase.replace(regexTitle, insertTitle)
+            }
     
             for (let word in americanToBritishSpelling) {
                 let regex = new RegExp("\\b" + word + "\\b", "gi");
@@ -33,11 +66,10 @@ class Translator {
 
             for(let word in americanOnly) {
 
-                const regex = new RegExp("\\b" + word + "\\b", "g");
+                const regex = new RegExp("\\b" + word + "\\b", "gi");
                 let insertWord = `<span class="highlight">${britishOnly[word]}</span>`
 
                 newPhrase = newPhrase.replace(regex, insertWord)
-
             }
 
             const americanTimeRegex = /(\b\d{1,2}):(\d{1,2}\b)/g
@@ -47,7 +79,7 @@ class Translator {
         
         }
        
-        return newPhrase;
+        return capitalizeTitleAndName(newPhrase)
     }
 
     britishToAmerican(txt) {
@@ -59,7 +91,7 @@ class Translator {
 
             for(let word in americanToBritishSpelling) {
 
-                const regex = new RegExp("\\b" + americanToBritishSpelling[word] + "\\b", "g")
+                const regex = new RegExp("\\b" + americanToBritishSpelling[word] + "\\b", "gi")
                 let insertWord = `<span class="highlight">${word}</span>`
 
                 newPhrase = newPhrase.replace(regex, insertWord)
@@ -67,7 +99,7 @@ class Translator {
 
             for(let word in britishOnly) {
 
-                const regex = new RegExp("\\b" + word + "\\b", "g");
+                const regex = new RegExp("\\b" + word + "\\b", "gi");
                 let insertWord = `<span class="highlight">${britishOnly[word]}</span>`
 
                 newPhrase = newPhrase.replace(regex, insertWord)
