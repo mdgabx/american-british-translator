@@ -10,7 +10,7 @@ class Translator {
         let translated = '';
         
         if(locale === 'american-to-british') {
-           translated = this.americanToBritish(text)
+          translated = this.americanToBritish(text)
         } else {
           translated = this.britishToAmerican(text)
         }
@@ -31,6 +31,15 @@ class Translator {
                 newPhrase = newPhrase.replace(regex, insertWord);
             }
 
+            for(let word in americanOnly) {
+
+                const regex = new RegExp("\\b" + word + "\\b", "g");
+                let insertWord = `<span class="highlight">${britishOnly[word]}</span>`
+
+                newPhrase = newPhrase.replace(regex, insertWord)
+
+            }
+
             const americanTimeRegex = /(\b\d{1,2}):(\d{1,2}\b)/g
             newPhrase = newPhrase.replace(americanTimeRegex, '<span class="highlight">$1.$2</span>')
 
@@ -43,6 +52,36 @@ class Translator {
 
     britishToAmerican(txt) {
 
+        let newPhrase = '';
+
+        if(txt) {
+            newPhrase = txt.toLowerCase();
+
+            for(let word in americanToBritishSpelling) {
+
+                const regex = new RegExp("\\b" + americanToBritishSpelling[word] + "\\b", "g")
+                let insertWord = `<span class="highlight">${word}</span>`
+
+                newPhrase = newPhrase.replace(regex, insertWord)
+            }
+
+            for(let word in britishOnly) {
+
+                const regex = new RegExp("\\b" + word + "\\b", "g");
+                let insertWord = `<span class="highlight">${britishOnly[word]}</span>`
+
+                newPhrase = newPhrase.replace(regex, insertWord)
+
+            }
+
+            const americanTimeRegex = /(\b\d{1,2}).(\d{1,2}\b)/g
+            newPhrase = newPhrase.replace(americanTimeRegex, '<span class="highlight">$1:$2</span>')
+
+            newPhrase = newPhrase.charAt(0).toUpperCase() + newPhrase.slice(1);
+
+        }
+
+        return newPhrase
     }
 }
 
