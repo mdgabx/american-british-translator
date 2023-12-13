@@ -8,15 +8,76 @@ class Translator {
     translate(locale, text) {
 
         let translated = '';
-        
-        if(locale === 'american-to-british') {
-          translated = this.americanToBritish(text)
-        } else {
-          translated = this.britishToAmerican(text)
-        }
 
+        if (locale === 'american-to-british' && this.isAlreadyBritish(text)) {
+            translated = 'Everything looks good to me!';
+        } else if (locale === 'british-to-american' && this.isAlreadyAmerican(text)) {
+            translated = 'Everything looks good to me!';
+        } else {
+            if(locale === 'american-to-british') {
+                translated = this.americanToBritish(text)
+              } else {
+                translated = this.britishToAmerican(text)
+              }
+        }
+           
+    
         return translated
     }
+
+    isAlreadyAmerican(txt) {
+        // let phrase = txt.toLowerCase()
+
+        // for (let word in americanOnly) {
+        //     if (phrase.includes(word)) {
+        //         return true; // Return true if any American English word is found
+        //     }
+        // }
+
+
+
+        // return false; 
+    }
+
+    isAlreadyBritish(txt) {
+        let count = 0;
+        let phrase = txt.toLowerCase()
+
+        for (let word in britishOnly) {
+            const regex = new RegExp("\\b" + word + "\\b", "gi")
+
+            if(regex.test(phrase)) {
+                count++
+            }
+        }
+
+        console.log('first count', count)
+
+
+        for (let word in americanToBritishSpelling) {
+            const regex  = new RegExp("\\b" + americanToBritishSpelling[word] + "\\b", "gi")
+            if(regex.test(phrase)) {
+                count++
+            }
+        }
+
+        console.log('2nd count', count)
+
+        // for (let title in americanToBritishTitles) {
+        //     if(phrase.match(`${this.escapeRegExp(americanToBritishTitles[title])}`)) {
+        //         count++
+        //     }
+        // }
+
+        // // console.log(count)
+
+        if(count === 0) {
+            return false
+        } else {
+            return true
+        }
+    }
+
 
     escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

@@ -11,8 +11,6 @@ module.exports = function (app) {
 
       const { locale, text } = req.body
 
-      // console.log('translate', translator.translate(locale, text))
-
       if(text === '') {
         return res.json({ error: 'No text to translate' })
       }
@@ -25,9 +23,6 @@ module.exports = function (app) {
       if(!locale || !text) {
         return res.json({ error: 'Required field(s) missing' })
       }
-
-
-  
 
       const translation = translator.translate(locale, text)
       
