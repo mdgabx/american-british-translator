@@ -18,30 +18,31 @@ class Translator {
         return translated
     }
 
+    escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    capitalize(title) {
+        return title.charAt(0).toUpperCase() + title.slice(1)
+    }
+
+    
+    capitalizeTitleAndName(phrase) {
+        let words = phrase.split(' ')
+
+        for(let i = 0; i < words.length; i++) {
+            if(/mr|mrs|ms|mx|dr|prof/gi.test(words[i])) {
+                words[i + 1] = words[i + 1].charAt(0).toUpperCase() + words[i + 1].slice(1);
+            } 
+        }
+
+        words = words.join(' ')
+
+       return words
+    }
+
 
     americanToBritish(txt) {
-
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        function capitalize(title) {
-            return title.charAt(0).toUpperCase() + title.slice(1)
-        }
-
-        function capitalizeTitleAndName(phrase) {
-            let words = phrase.split(' ')
-
-            for(let i = 0; i < words.length; i++) {
-                if(/mr|mrs|ms|mx|dr|prof/gi.test(words[i])) {
-                    words[i + 1] = words[i + 1].charAt(0).toUpperCase() + words[i + 1].slice(1);
-                } 
-            }
-
-            words = words.join(' ')
-
-           return words
-        }
 
         let newPhrase = '';
 
@@ -49,10 +50,10 @@ class Translator {
             newPhrase = txt.toLowerCase();
 
             for(let title in americanToBritishTitles) {
-                const escapedTitle = escapeRegExp(title)
+                const escapedTitle = this.escapeRegExp(title)
                 const regexTitle = new RegExp(escapedTitle, "gi")
 
-                let insertTitle = `<span class="highlight">${capitalize(americanToBritishTitles[title])}</span>`
+                let insertTitle = `<span class="highlight">${this.capitalize(americanToBritishTitles[title])}</span>`
 
                 newPhrase = newPhrase.replace(regexTitle, insertTitle)
             }
@@ -79,7 +80,7 @@ class Translator {
         
         }
        
-        return capitalizeTitleAndName(newPhrase)
+        return this.capitalizeTitleAndName(newPhrase)
     }
 
     britishToAmerican(txt) {
