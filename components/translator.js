@@ -90,8 +90,18 @@ class Translator {
         if(txt) {
             newPhrase = txt.toLowerCase();
 
-            for(let word in americanToBritishSpelling) {
+            for(let title in americanToBritishTitles) {
+                const escapedTitle = this.escapeRegExp(americanToBritishTitles[title])
+                const regexTitle = new RegExp("\\b" + escapedTitle + "\\b", "gi")
 
+                let insertTitle = `<span class="highlight">${this.capitalize(title)}</span>`
+
+                newPhrase = newPhrase.replace(regexTitle, insertTitle)
+
+            }
+
+            for(let word in americanToBritishSpelling) {
+    
                 const regex = new RegExp("\\b" + americanToBritishSpelling[word] + "\\b", "gi")
                 let insertWord = `<span class="highlight">${word}</span>`
 
@@ -114,7 +124,7 @@ class Translator {
 
         }
 
-        return newPhrase
+        return this.capitalizeTitleAndName(newPhrase)
     }
 }
 
