@@ -45,31 +45,25 @@ class Translator {
 
         for (let word in britishOnly) {
             const regex = new RegExp("\\b" + word + "\\b", "gi")
-
             if(regex.test(phrase)) {
                 count++
             }
         }
-
-        console.log('first count', count)
-
 
         for (let word in americanToBritishSpelling) {
             const regex  = new RegExp("\\b" + americanToBritishSpelling[word] + "\\b", "gi")
             if(regex.test(phrase)) {
+                console.log('words match', americanToBritishSpelling[word])
                 count++
             }
         }
 
-        console.log('2nd count', count)
-
-        // for (let title in americanToBritishTitles) {
-        //     if(phrase.match(`${this.escapeRegExp(americanToBritishTitles[title])}`)) {
-        //         count++
-        //     }
-        // }
-
-        // // console.log(count)
+        for (let title in americanToBritishTitles) {
+            const regex = new RegExp(`\\b${this.escapeRegExp(americanToBritishTitles[title])}\\b`, 'gi');
+            if (regex.test(phrase)) {
+                return count++;
+            }
+        }
 
         if(count === 0) {
             return false
