@@ -5,31 +5,42 @@ const Translator = require('../components/translator.js');
 module.exports = function (app) {
   
   const translator = new Translator();
+  app.route('/api/translate').post((req, res) => {
+    const { locale, text } = req.body;
 
-  app.route('/api/translate')
-    .post((req, res) => {
+    if (text === '') {
+        return res.json({ error: 'No text to translate' });
+    }
 
-      const { locale, text } = req.body
+    if (locale !== 'american-to-british' && locale !== 'british-to-american') {
+        return res.json({ error: 'Invalid value for locale field' });
+    }
 
-      if(text === '') {
-        return res.json({ error: 'No text to translate' })
-      }
+    if (!locale || !text) {
+        return res.json({ error: 'Required field(s) missing' });
+    }
 
-      if(locale !== 'american-to-british' && locale !== 'british-to-american') {
-        return res.json({ error: 'Invalid value for locale field' })
-      }
+    let translatedText = '';
 
+    if (locale === 'american-to-british') {
+        translatedText = translator.americanToBritish(text);
+    } else {
+        translatedText = translator.britishToAmerican(text);
+    }
 
-      if(!locale || !text) {
-        return res.json({ error: 'Required field(s) missing' })
-      }
+    const removeHTMLTags = (str) => str.replace(/<[^>]*>/g, '');
 
-      const translation = translator.translate(locale, text)
-      
-      res.json({
+    if (removeHTMLTags(translatedText) === text) {
+        return res.json({
+            text,
+            translation: 'Everything looks good to me!'
+        });
+    }
+
+    res.json({
         text,
-        translation
-      })
-
+        translation: translator.capitalize(translatedText)
     });
+});
+
 };

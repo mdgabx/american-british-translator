@@ -26,17 +26,37 @@ class Translator {
     }
 
     isAlreadyAmerican(txt) {
-        // let phrase = txt.toLowerCase()
+        let count = 0
+        let phrase = txt.toLowerCase()
 
-        // for (let word in americanOnly) {
-        //     if (phrase.includes(word)) {
-        //         return true; // Return true if any American English word is found
-        //     }
-        // }
+        for(let word in americanOnly) {
+            const regex = new RegExp("\\b" + word + "\\b", "gi")
 
+            if(regex.test(phrase)) {
+                count++
+            }
+        }
 
+        for(let word in americanToBritishSpelling) {
+            const regex = new RegExp("\\b" + word + "\\b", "gi")
 
-        // return false; 
+            if(regex.test(phrase)) {
+                count++
+            }
+        }
+
+        for(let title in americanToBritishTitles) {
+            const regex = new RegExp(`\\b${this.escapeRegExp(title)}\\b`, 'gi');
+            if (regex.test(phrase)) {
+                return count++;
+            }
+        }
+        
+        if(count === 0) {
+            return false
+        } else {
+            return true
+        }
     }
 
     isAlreadyBritish(txt) {
@@ -104,6 +124,13 @@ class Translator {
         if(txt) {
             newPhrase = txt.toLowerCase();
 
+            for(let word in americanOnly) {
+                const regex = new RegExp("\\b" + word + "\\b", "gi")
+                let insertWord = `<span class="highlight">${americanOnly[word]}</span>`  
+                
+                newPhrase = newPhrase.replace(regex, insertWord)
+            }
+
             for(let title in americanToBritishTitles) {
                 const escapedTitle = this.escapeRegExp(title)
                 const regexTitle = new RegExp(escapedTitle, "gi")
@@ -120,10 +147,10 @@ class Translator {
                 newPhrase = newPhrase.replace(regex, insertWord);
             }
 
-            for(let word in americanOnly) {
+            for(let word in britishOnly) {
 
-                const regex = new RegExp("\\b" + word + "\\b", "gi");
-                let insertWord = `<span class="highlight">${britishOnly[word]}</span>`
+                const regex = new RegExp("\\b" + britishOnly[word] + "\\b", "gi");
+                let insertWord = `<span class="highlight">${word}</span>`
 
                 newPhrase = newPhrase.replace(regex, insertWord)
             }
@@ -145,15 +172,16 @@ class Translator {
         if(txt) {
             newPhrase = txt.toLowerCase();
 
-            for(let title in americanToBritishTitles) {
-                const escapedTitle = this.escapeRegExp(americanToBritishTitles[title])
-                const regexTitle = new RegExp("\\b" + escapedTitle + "\\b", "gi")
-
-                let insertTitle = `<span class="highlight">${this.capitalize(title)}</span>`
-
-                newPhrase = newPhrase.replace(regexTitle, insertTitle)
-
+            for (let title in americanToBritishTitles) {
+                const escapedTitle = this.escapeRegExp(americanToBritishTitles[title]);
+                const regexTitle = new RegExp(`\\b${escapedTitle}(?=\\s|$)\\.`,'gi');
+                // Using positive lookahead to match the title followed by a space, dot, or end of string
+            
+                let insertTitle = `<span class="highlight">${this.capitalize(title)}</span>`;
+            
+                newPhrase = newPhrase.replace(regexTitle, insertTitle);
             }
+            
 
             for(let word in americanToBritishSpelling) {
     
@@ -163,14 +191,22 @@ class Translator {
                 newPhrase = newPhrase.replace(regex, insertWord)
             }
 
+                for(let word in americanOnly) {
+                const regex = new RegExp("\\b" + americanOnly[word] + "\\b", "gi")
+                let insertWord = `<span class="highlight">${word}</span>`  
+                
+                newPhrase = newPhrase.replace(regex, insertWord)
+            }
+
             for(let word in britishOnly) {
 
-                const regex = new RegExp("\\b" + word + "\\b", "gi");
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
                 let insertWord = `<span class="highlight">${britishOnly[word]}</span>`
 
                 newPhrase = newPhrase.replace(regex, insertWord)
-
             }
+
+        
 
             const americanTimeRegex = /(\b\d{1,2}).(\d{1,2}\b)/g
             newPhrase = newPhrase.replace(americanTimeRegex, '<span class="highlight">$1:$2</span>')
