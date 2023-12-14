@@ -30,7 +30,8 @@ module.exports = function (app) {
 
     const removeHTMLTags = (str) => str.replace(/<[^>]*>/g, '');
 
-    if (removeHTMLTags(translatedText) === text) {
+    if (removeHTMLTags(translatedText).toLowerCase() === text.toLowerCase()) {
+
         return res.json({
             text,
             translation: 'Everything looks good to me!'
