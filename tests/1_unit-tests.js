@@ -292,4 +292,69 @@ suite('Unit Tests', () => {
             done()
         })
     })
+
+    suite("test highlight translation", () => {
+
+        test("Highlight translation in Mangoes are my favorite fruit.", (done) => {
+
+            const locale = 'american-to-british'
+            let phrase = "Mangoes are my favorite fruit."
+
+            const res = translator.translate(locale, phrase)
+
+            assert.notEqual(res, '')
+            assert.notEqual(res, undefined)
+            assert.notEqual(res, 'Everything looks good to me!')
+            assert.include(res, 'class="highlight"')
+
+            done()
+        })
+
+        test("Highlight translation in I ate yogurt for breakfast.", (done) => {
+            const locale = 'american-to-british'
+            let phrase = "I ate yogurt for breakfast."
+
+            const res = translator.translate(locale, phrase)
+
+            assert.notEqual(res, '')
+            assert.notEqual(res, undefined)
+            assert.notEqual(res, 'Everything looks good to me!')
+            assert.include(res, 'class="highlight"')
+            
+
+            done();
+        })
+
+        test("Highlight translation in We watched the footie match for a while.", (done) => {
+            const locale = 'british-to-american'
+            let phrase = "We watched the footie match for a while."
+
+            const res = translator.translate(locale, phrase)
+
+            assert.notEqual(res, '')
+            assert.notEqual(res, undefined)
+            assert.notEqual(res, 'Everything looks good to me!')
+            assert.include(res, 'class="highlight"')
+            
+
+            done();
+        })
+
+        test("Highlight translation in Paracetamol takes up to an hour to work.", (done) => {
+            const locale = 'british-to-american'
+            let phrase = "Paracetamol takes up to an hour to work."
+
+            const res = translator.translate(locale, phrase)
+
+            assert.notEqual(res, '')
+            assert.notEqual(res, undefined)
+            assert.notEqual(res, 'Everything looks good to me!')
+            assert.include(res, 'class="highlight"')
+            
+            done();
+        })
+
+    })
+
+    
 });
